@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          Int @id @default(autoincrement())
+  userId      String @unique
+  name        String
+  username    String @unique
+  email       String @unique
+  password    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+  likedPosts  Like[]
+  permissions String @default("USER")
+  RefreshToken RefreshToken?
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId String
+  likes Like[]
+  author User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+// create a like relation
+model Like {
+  id Int @id @default(autoincrement())
+  postId Int
+  userId String
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model RefreshToken {
+  id   String @id @default(uuid())
+  expiresIn Int
+  userid String
+  user User @relation(fields: [userid], references: [userId], onDelete: Cascade)
+}
