@@ -13,6 +13,9 @@ class RefreshTokenUserUseCase {
     if (!refresh_token) {
       return false;
     }
+    if (typeof refresh_token !== "string") {
+      return false;
+    }
     const refreshToken = await prisma.refreshToken.findUnique({
       where: {
         id: refresh_token,
