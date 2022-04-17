@@ -7,6 +7,11 @@ const RefreshTokenUserUseCase = require("./RefreshTokenUserUseCase");
 class RefreshTokenUserController {
   async handle(req, res, next) {
     const { refresh_token } = req.body;
+    if (!refresh_token) {
+      return res.status(401).json({
+        message: "Refresh token is required",
+      });
+    }
     const refreshtokenUserUseCase = new RefreshTokenUserUseCase();
     const refreshtoken = await refreshtokenUserUseCase.execute(refresh_token);
     if (!refreshtoken) {
